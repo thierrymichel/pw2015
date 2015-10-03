@@ -56,11 +56,23 @@ var tmpDir = '.tmp/';
 var siteFiles = [
     '**/*',
     '!styles{,/**}',        // specific task!
+    '!scripts/*',           // specific task!
+    '!scripts/lib{,/**}',   // specific task!
+    '!scripts/parts{,/**}',   // specific task!
     '!images{,/**}'         // specific task!
   ];
 var stylesFiles = 'styles/**/*.scss';
 var stylesDir = 'styles/';
 var mainFile = 'main';
+var scriptsDir = 'scripts/';
+var scriptsFiles = [
+    'scripts/*.js',
+    'scripts/lib/*.js',
+    'scripts/parts/*.js',
+    '!scripts/**/*.min.js',
+    '!scripts/vendor/**/*.js'
+  ];
+var scriptsConcat = [];
 var imagesDir = 'images/';
 var imagesFiles = 'images/**/*';
 var breakpointsDir = 'scripts/parts/';
@@ -101,7 +113,7 @@ function pathConcat(path, base) {
 gulp.task('default', ['dev']);
 
 // gulp.task('dev', ['styles', 'modernizr', 'scripts', 'watch'], function () {
-gulp.task('dev', ['copy', 'process:styles', 'process:images', 'watch'], function () {
+gulp.task('dev', ['copy', 'process:styles', 'process:scripts', 'process:images', 'watch'], function () {
   console.log('DEV task COMPLETE!');
 });
 
@@ -215,6 +227,67 @@ gulp.task('process:styles', ['breakpoints'], function () {
 
 
 /*
+ * SCRIPTS task (with browserify and watchify)
+ * scripts: concat + browserify + uglify + sourcemaps (only in dev mode)
+ */
+
+gulp.task('process:scripts', bundle);
+
+
+function bundle() {
+
+  var src = srcDir + scriptsDir + mainFile + '.js',
+    srcConcat = pathConcat(scriptsConcat, srcDir),
+    bOpts = {
+      entries: [src],
+      debug: true
+    }, // add custom browserify options here
+    opts = assign({}, watchify.args, bOpts),
+    b;
+
+  // b = watchify(browserify(opts));
+  b = (env === 'dev') ? watchify(browserify(opts)) : browserify(opts);
+  b.transform(stringify(['.json'])); // add the ability to require() text files (eg: .json)
+  // b.transform(concatenify); // concatenation (browserify transformations)
+  b.on('update', bundle); // on any dep update, runs the bundler
+  // b.on('log', gutil.log); // output build logs to terminal
+  b.on('log', function () {
+    gutil.log('Running  \'' + gutil.colors.cyan('process:scripts') + '\'');
+  });
+
+  return b.bundle()
+    // log errors if they happen
+    .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+    .pipe(source(mainFile + '.js'))
+    // optional, remove if you don't need to buffer file contents
+    .pipe(buffer())
+    // optional, remove if you dont want sourcemaps
+    .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+    // Add transformation tasks to the pipeline here.
+    .pipe(addSrc(srcConcat))
+    .pipe(concat(mainFile + '.js'))
+    .pipe(uglify())
+    .pipe(rename({
+      suffix: ".min"
+    }))
+    .pipe(gulpif(
+      env === 'dev',
+      sourcemaps.write('./')
+    ))
+    .pipe(gulpif(
+      env === 'dev',
+      gulp.dest(destDir + scriptsDir),
+      gulp.dest(tmpDir + scriptsDir)
+    ))
+    .pipe(gulpif(
+      env === 'dev',
+      livereload()
+    ))
+    .on('end', function () { gutil.log('Finished \'' + gutil.colors.cyan('bundle') + '\''); });
+}
+
+
+/*
  * IMAGES task
  * images optimisation
  * dev mode: only changed images (via cache)
@@ -278,11 +351,13 @@ gulp.task('init-build', function () {
  * delete *.min.* files
  * delete images/
  */
-gulp.task('rev-clean', ['copy', 'process:styles', 'process:images'], function () {
+gulp.task('rev-clean', ['copy', 'process:styles', 'process:scripts', 'process:images'], function () {
 
   var src = [
     destDir + stylesDir + '*.min.css',
     destDir + stylesDir + '*.min.css.map',
+    destDir + scriptsDir + '*.min.js',
+    destDir + scriptsDir + '*.min.js.map',
     destDir + imagesDir + '**/*'
   ];
   return del(src);
@@ -297,6 +372,7 @@ gulp.task('rev', ['rev-clean'], function () {
 
   var src = [
     tmpDir + stylesDir + mainFile + '.min.css',
+    tmpDir + scriptsDir + mainFile + '.min.js',
     tmpDir + imagesFiles
   ];
 
@@ -319,6 +395,7 @@ gulp.task('rev-replace', ['rev'], function () {
   var manifest = gulp.src(revMainFile),
     src = [
       destDir + stylesDir + '*.css',
+      destDir + scriptsDir + '*.js',
       destDir + revFiles
     ];
 
