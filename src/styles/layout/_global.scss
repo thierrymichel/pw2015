@@ -1,0 +1,26 @@
+body {
+  background: $color-light;
+  color: $color-dark;
+}
+
+a {
+  color: $color-dark;
+  text-decoration: none;
+}
+
+nav {
+  position: absolute;
+  top: 2rem;
+}
+
+@include mq('large') {
+
+  nav {
+    position: static;
+  }
+  .movie {
+    background-color: lime;
+    width: 50%;
+    margin-left: 50%;
+  }
+}

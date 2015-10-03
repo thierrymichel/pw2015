@@ -1,0 +1,295 @@
+.movie {
+  position: relative;
+  z-index: 10;
+  padding: 2.5rem;
+  background-color: $color-light;
+
+  @include mq('large') {
+    padding: 5rem 2rem 0 6rem;
+  }
+
+  @include mq('xlarge') {
+    padding-right: 10rem;
+    padding-left: 13rem;
+  }
+}
+
+
+
+/*
+ * movie header
+ */
+
+.movie__header {
+  display: table;
+  width: calc(100% + 5rem);
+  height: 155px;
+  padding: 4rem 2.5rem 2.5rem;
+  margin: -2.5rem -2.5rem 2rem;
+  background: $color-gray-dark url('../images/header.jpg') no-repeat center center;
+  background-size: cover;
+  color: $color-light;
+
+  @include hi-res('../images/header@2x.jpg');
+
+  a {
+    color: $color-light;
+    transition: color 300ms ease-out;
+
+    &:hover,
+    &:focus {
+      color: $color-main;
+    }
+  }
+
+  @include mq('large') {
+    display: block;
+    margin-right: 0;
+    margin-left: 0;
+    padding-left: 0;
+    width: auto;
+    height: auto;
+    background: none;
+
+    a {
+      color: $color-dark;
+
+      &:before {
+        font-size: 250%;
+      }
+    }
+  }
+
+  @include mq('xlarge') {
+    margin-bottom: 1rem;
+  }
+}
+
+.movie__title {
+  @include mq('large') {
+    margin: 1.5rem 0 0;
+    color: $color-dark;
+  }
+}
+
+.movie__title,
+.movie__rating {
+  display: table-cell;
+  height: 100%;
+  vertical-align: bottom;
+
+  @include mq('large') {
+    display: block;
+    height: auto;
+  }
+
+}
+
+.movie__rating {
+  position: relative;
+  z-index: 11;
+  bottom: 6px;
+  width: 66px;
+  border: 2px solid $color-main;
+  color: $color-main;
+  text-align: center;
+  vertical-align: top;
+
+  @include mq('large') {
+    position: fixed;
+    top: 13.5rem;
+    right: 50%;
+    bottom: auto;
+    width: 90px;
+    transform: translate3d(50%, 0, 0);
+    backface-visibility: hidden;
+    // visibility: visible;
+    // margin-right: -45px;
+  }
+
+  @include mq('xlarge') {
+    width: 130px;
+    padding-bottom: 8px;
+    border-width: 3px;
+    // margin-right: -65px;
+  }
+}
+
+.movie__rating__value {
+  display: block;
+  padding: 11px 9px;
+  margin-bottom: 6px;
+  background-color: $color-main;
+  color: $color-light;
+
+  &:after {
+    height: 9px;
+  }
+
+  @include mq('large') {
+    padding: 11px 12px;
+
+    &:after {
+      height: 13px;
+    }
+  }
+
+  @include mq('xlarge') {
+    padding-bottom: 28px;
+    margin-bottom: 8px;
+
+    &:after {
+      height: 20px;
+    }
+  }
+}
+
+
+
+/*
+ * movie card
+ */
+
+.movie__genre,
+.movie__info,
+.movie__person {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.movie__genre {
+  @include mq('xlarge') {
+    margin-bottom: 3.5rem;
+  }
+}
+
+.movie__genre__item {
+  display: inline-block;
+
+  a {
+    display: block;
+    padding: .4em .6em .2em;
+    border: 1px solid $color-gray-light;
+    margin-right: 1em;
+    color: $color-gray-light;
+    line-height: 1;
+    border-radius: 999em;
+    transition: all 300ms ease-out;
+
+    &:hover,
+    &:focus {
+      background-color: $color-gray-light;
+      color: $color-light;
+    }
+  }
+}
+
+.movie__description {
+  margin-right: 5rem;
+  margin-bottom: 3.6rem;
+
+  @include mq('large') {
+    margin-right: 7rem;
+  }
+  @include mq('xlarge') {
+    margin-right: 5rem;
+    margin-bottom: 5rem;
+  }
+}
+
+.movie__info {
+  overflow: hidden;
+  margin-bottom: 3.6rem;
+}
+
+.movie__info__item {
+  float: left;
+  width: 33%;
+
+  @include mq('medium') {
+    width: auto;
+    margin-right: 4rem;
+  }
+}
+
+.movie__job-title {
+  margin: 0;
+
+  @include mq('medium') {
+    display: inline-block;
+    width: 9rem;
+  }
+}
+
+.movie__person {
+  margin-bottom: 1rem;
+
+  &:last-of-type {
+    margin-bottom: 5rem;
+  }
+
+  @include mq('medium') {
+    display: inline-block;
+    width: calc(100% - 11rem);
+  }
+}
+
+.movie__person__name {
+  display: inline;
+
+  .is-block & {
+    display: list-item;
+
+    @include mq('medium') {
+      display: inline;
+    }
+  }
+
+  span {
+    color: $color-main;
+  }
+
+  &:not(:last-child):after {
+    content: ', ';
+  }
+}
+
+.movie__trailer {
+  margin: 0 2rem 1.7rem 0;
+
+  @include mq('medium') {
+    float: left;
+    width: calc(47% - 2rem);
+    margin-right: 2rem;
+  }
+
+  @include mq('large') {
+    width: calc(100% - 8rem);
+  }
+
+  @include mq('xlarge') {
+    width: calc(50% - 4rem);
+  }
+}
+
+.movie__wrapper {
+  position: relative;
+  height: 0;
+  padding-top: 58%;
+}
+
+.movie__trailer__media {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.movie__trailer__legend {
+  position: absolute;
+  top: 1rem;
+  left: 1.2rem;
+  color: $color-light;
+}

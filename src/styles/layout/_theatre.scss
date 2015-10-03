@@ -1,0 +1,501 @@
+$theatre-width: 28rem;
+
+.theatre {
+  // position: relative;
+  position: fixed;
+  z-index: 21;
+  top: 155px;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  width: $theatre-width;
+  background-color: $color-gray-dark;
+  color: $color-light;
+  transform: translate3d(100%, 0, 0);
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -20px;
+    bottom: 0;
+    display: block;
+    width: 20px;
+    background-color: $color-gray-dark;
+  }
+
+  @include mq('large') {
+    top: 0;
+    display: block;
+
+    transform: translate3d(calc(100% - 8px), 0, 0);
+    transition: background-color 300ms ease-out;
+    background-color: $color-main;
+
+    &:hover {
+      background-color: $color-gray-dark;
+    }
+
+    // &:before {
+    //   content: '';
+    //   position: absolute;
+    //   top: 0;
+    //   bottom: 0;
+    //   left: -8px;
+    //   display: block;
+    //   width: 8px;
+    //   background-color: $color-main;
+    //   transition: background-color 300ms ease-out;
+    // }
+
+    // &:hover:before {
+    //   background-color: $color-gray-dark;
+    // }
+  }
+}
+
+.theatre__content {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 2rem 3rem 0;
+  margin-bottom: 9rem;
+}
+
+.theatre__title {
+  position: absolute;
+  z-index: 22;
+  top: 2.4rem;
+  left: 2px;
+  padding: .6em 1em;
+  margin: 0;
+  background-color: $color-main;
+  transform: translate3d(-100%, 0, 0) rotate(-90deg);
+  backface-visibility: hidden;
+  transform-origin: 100% 100%;
+  cursor: pointer;
+  transition: background-color 300ms ease-out;
+
+  svg {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 1.5rem;
+    transform: rotate(90deg);
+    width: 30px;
+    height: 30px;
+
+    @include mq('xlarge') {
+      width: 60px;
+      height: 60px;
+    }
+
+    @include hi-svg(30px);
+  }
+
+  .theatre:hover & {
+    background-color: $color-gray-dark;
+  }
+  .theatre:hover &:before {
+    // background-image: url('../images/theatre-anim.gif')
+  }
+
+  @include mq('large') {
+    top: 8rem;
+  }
+
+  @include mq('xlarge') {
+    top: 5rem;
+  }
+}
+
+// animation vs transition (quén biêsse)
+#l1,
+#l2,
+#l3 {
+  stroke-dasharray: 24 24;
+  stroke-dashoffset: 0;
+
+  .theatre-open & {
+    animation: short .2s linear .2s forwards;
+  }
+}
+
+@keyframes short {
+  to {
+    stroke-dashoffset: 24;
+  }
+}
+
+#rideau {
+  stroke-dasharray: 130 130;
+  stroke-dashoffset: 0;
+
+  .theatre-open & {
+    animation: long .6s linear forwards;
+  }
+
+  // .theatre-out & {
+  //   animation: long .6s linear backwards;
+  // }
+}
+
+@keyframes long {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: 130;
+  }
+}
+
+
+#close {
+  stroke-dasharray: 16 16;
+  stroke-dashoffset: 16;
+
+  .theatre-open & {
+    animation: close .2s linear .6s forwards;
+  }
+}
+
+@keyframes close {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+
+/*
+ * theatre content
+ */
+
+.theatre__moment {
+  margin: 0 0 .8rem;
+  color: $color-gray-medium;
+}
+
+.theatre__list {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.theatre__item {
+  position: relative;
+  padding: .8rem 0 .8rem 5.5rem;
+  border-top: 1px solid transparentize($color-gray-medium, .8);
+  color: $color-gray-medium;
+}
+
+.theatre__logo {
+  position: absolute;
+  left: 0;
+  // top: 0;
+}
+
+.theatre__date,
+.theatre__item time {
+  color: $color-main;
+}
+
+.theatre__location {
+  display: block;
+  color: $color-light;
+}
+
+.theatre__more {
+  display: block;
+  padding: 1rem;
+  border: 1px solid transparentize($color-gray-medium, .8);
+  border-width: 1px 0;
+  margin-bottom: 2rem;
+  color: $color-light;
+  text-align: center;
+}
+
+
+
+/*
+ * buy tickets 
+ */
+
+.theatre__buy {
+  position: absolute;
+  z-index: 23;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 2.2rem 0;
+  background-color: darken($color-gray-dark, 5%);
+  text-align: center;
+
+  a {
+    display: inline-block;
+    padding: .5rem 2rem;
+    border: 1px solid $color-main;
+    color: $color-main;
+    border-radius: 999em;
+    transition: background-color 300ms ease-out;
+
+    &:hover,
+    &:focus {
+      background-color: $color-main;
+      color: $color-light;
+    }
+  }
+
+  @include mq('large') {
+    left: 8px;
+  }
+}
+
+
+
+/*
+ * panel animation and states
+ */
+
+.theatre-overlay {
+  position: fixed;
+  z-index: 19;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: none;
+  background-color: rgba(0, 0, 0, .9);
+
+  .large & {
+    z-index: 9;
+    background-color: rgba(0, 0, 0, .5);
+  }
+}
+
+.theatre-in,
+.theatre-out {
+  pointer-events: none;
+
+  &.large .movie__rating {
+    // position: absolute;
+    // right: 100%;
+  }
+}
+
+.theatre-open {
+  &:not(.large) {
+    .wrapper {
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+  }
+
+  &.large {
+    .movie {
+      margin-left: calc(50% - #{$theatre-width});
+    }
+
+    .movie__rating {
+      transform: translate3d(calc(50% - #{$theatre-width}), 0, 0);
+    }
+  }
+
+  .theatre {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.theatre-open,
+.theatre-in,
+.theatre-out {
+
+  &:not(.large) {
+    overflow: hidden;
+  }
+
+  .theatre {
+    background-color: $color-gray-dark;
+    // background-color: transparent;
+  }
+
+  .theatre:before {
+    background-color: $color-gray-dark;
+    background-color: transparent;
+  }
+
+  .theatre__title {
+    background-color: $color-gray-dark;
+  }
+
+  &.large {
+    .theatre__buy {
+      left: 0;
+    }
+  }
+}
+
+.theatre-in {
+  .theatre {
+    animation: theatreOpen .7s forwards cubic-bezier(.3, 0, .1, 1);
+  }
+
+  &.large {
+    .movie {
+      animation: movieOpenLarge .7s forwards ease-out;
+    }
+
+    .movie__rating {
+      animation: ratingOpenLarge .7s forwards ease-out;
+    }
+
+    .theatre {
+      animation: theatreOpenLarge .7s forwards ease-out;
+    }
+  }
+}
+
+.theatre-out {
+  .theatre {
+    animation: theatreClose .7s forwards cubic-bezier(.6, 0, 1, .5);
+  }
+
+  &.large {
+    .movie {
+      animation: movieCloseLarge .7s forwards ease-out;
+    }
+
+    .movie__rating {
+      animation: ratingCloseLarge .7s forwards ease-out;
+    }
+
+    .theatre {
+      animation: theatreCloseLarge .7s forwards ease-out;
+    }
+  }
+}
+
+@keyframes theatreOpen {
+  from {}
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes theatreClose {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+@keyframes theatreOpenLarge {
+  from {
+    transform: translate3d(100%, 0, 0);
+  }
+
+  20% {
+    transform: translate3d(calc(100% + 8px), 0, 0);
+  }
+
+  90% {
+    transform: translate3d(-1rem, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes theatreCloseLarge {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  20% {
+    transform: translate3d(-1rem, 0, 0);
+  }
+
+  90% {
+    transform: translate3d(calc(100% + 8px), 0, 0);
+  }
+
+  to {
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+@keyframes movieOpenLarge {
+  from {
+    margin-left: 50%;
+  }
+
+  20% {
+    margin-left: 50%;
+  }
+
+  90% {
+    margin-left: calc(50% - #{$theatre-width});
+  }
+
+  to {
+    margin-left: calc(50% - #{$theatre-width});
+  }
+}
+
+@keyframes movieCloseLarge {
+  from {
+    margin-left: calc(50% - #{$theatre-width});
+  }
+
+  20% {
+    margin-left: calc(50% - #{$theatre-width});
+  }
+
+  90% {
+    margin-left: 50%;
+  }
+
+  to {
+    margin-left: 50%;
+  }
+}
+
+@keyframes ratingOpenLarge {
+  from {
+    transform: translate3d(50%, 0, 0);
+  }
+
+  20% {
+    transform: translate3d(50%, 0, 0);
+  }
+
+  90% {
+    transform: translate3d(calc(50% - #{$theatre-width}), 0, 0);
+  }
+
+  to {
+    transform: translate3d(calc(50% - #{$theatre-width}), 0, 0);
+  }
+}
+
+@keyframes ratingCloseLarge {
+  from {
+    transform: translate3d(calc(50% - #{$theatre-width}), 0, 0);
+  }
+
+  20% {
+    transform: translate3d(calc(50% - #{$theatre-width}), 0, 0);
+  }
+
+  90% {
+    transform: translate3d(50%, 0, 0);
+  }
+
+  to {
+    transform: translate3d(50%, 0, 0);
+  }
+}

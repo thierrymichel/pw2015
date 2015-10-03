@@ -1,0 +1,26 @@
+.rating {
+  &:after {
+    content: '';
+    display: block;
+    background: url('../images/rating.svg') left bottom;
+    background-position: 100% top;
+    background-size: auto 200%;
+  }
+
+  @for $i from 0 through 5 {
+    &[data-rating='#{$i}']:after {
+      background-position: (100 - $i*20) * 1% top;
+    }
+  }
+
+  // &.rating--white:after {
+  //   background-position-y: bottom;
+  // }
+  &.rating--white {
+    @for $i from 0 through 5 {
+      &[data-rating='#{$i}']:after {
+        background-position: (100 - $i*20) * 1% bottom;
+      }
+    }
+  }
+}
